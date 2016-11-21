@@ -1,1 +1,1 @@
-# gREM
+# Generalized Replica Exchange MethodImplemented for LAMMPSEnhanced sampling method specifically designed to sample first-order phase transitions. To install: copy contents of the src directory to your LAMMPS src directory, and re-compile
