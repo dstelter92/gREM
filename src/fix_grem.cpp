@@ -17,9 +17,9 @@
 ------------------------------------------------------------------------- */
 
 /* ----------------------------------------------------------------------
-   Contributing author: Edyta Malolepsza (Broad Institute)
-   Contributing author: David Stelter (Boston University)
-   Contributing author: Tom Keyes (Boston University)
+   Contributing authors: Edyta Malolepsza (Broad Institute)
+                         David Stelter (Boston University)
+                         Tom Keyes (Boston University)
 ------------------------------------------------------------------------- */
 
 #include <string.h>
@@ -97,7 +97,7 @@ FixGrem::FixGrem(LAMMPS *lmp, int narg, char **arg) :
   newarg = new char*[5];
   newarg[0] = id_press;
   newarg[1] = (char *) "all";
-  newarg[2] = (char *) "pressure/grem";
+  newarg[2] = (char *) "PRESSURE/GREM";
   newarg[3] = id_temp;
   newarg[4] = id;
   modify->add_compute(5,newarg);
