@@ -1,4 +1,5 @@
-Run with LAMMPS (19 May 2017)
+--> Run with LAMMPS (19 May 2017)
+--> Must be run on AT LEAST 16 mpi ranks
 
 Set last to 0 before running,
 
