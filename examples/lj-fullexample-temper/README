@@ -8,3 +8,5 @@ Set last to 0 before running,
   echo 0 > last
 
 This will start gREM from the begining, with all replicas initialized with "init_file_file" 
+
+NOTE: The lambda and eta used in this example are NOT optimized for the most efficient sampling.
