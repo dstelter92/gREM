@@ -1,0 +1,7 @@
+Run with LAMMPS (19 May 2017)
+
+Set last to 0 before running,
+
+  echo 0 > last
+
+This will start gREM from the begining, with all replicas initialized with "init_file_file" 

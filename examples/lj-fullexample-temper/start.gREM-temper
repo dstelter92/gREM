@@ -1,0 +1,30 @@
+# gREM variables
+variable        lambda world 1000 1005 1010 1015 1020 1025 1030 1035 1040 1045 1050 1055 1060 1065 1070 1075
+variable        walker world 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+variable        replica world 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+
+variable        T0 equal 300.0
+variable        press equal 0.0
+
+units           real
+atom_style      full
+pair_style      lj/cut 5.0
+
+# LJ particles
+read_data       init_restart_file
+
+#dump            dump all xyz 1000 ${rep}/dump.xyz
+
+fix             fxnpt all npt temp ${T0} ${T0} 1000.0 iso ${press} ${press} 10000.0 
+fix             fxgREM all grem ${lambda} -.03 -30000 fxnpt
+thermo_modify   press fxgREM_press
+
+thermo          50
+thermo_style    custom step temp f_fxgREM pe etotal press vol
+timestep        1.0
+
+temper/grem     100000 1000 ${lambda} fxgREM fxnpt 10294 98392 #${walker}
+
+write_data      ${walker}/final_restart_file
+
+quit
