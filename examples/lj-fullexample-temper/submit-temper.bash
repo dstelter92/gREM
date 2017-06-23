@@ -1,10 +1,10 @@
 #!/bin/bash
 #
-# Run temper/grem with 16 replicas on 16 processors
+# Run temper/grem with 16 replicas on 16 ranks
 
 export MPI_IMPLEMENTATION=openmpi
 
-NSLOTS=16
+NSLOTS=16 # Number of MPI ranks
 NREPLICA=16 # Number of replicas
 
 # Restart label
@@ -60,7 +60,7 @@ sleep 2
 # uncomment to resubmit!
 if [ "$indx" -lt 5 ]; then
   sleep 1
-  ./submit-temper.bash
+  #./submit-temper.bash
 fi
 
 exit 0

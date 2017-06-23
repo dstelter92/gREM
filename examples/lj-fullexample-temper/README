@@ -1,6 +1,8 @@
 --> Run with LAMMPS (19 May 2017)
 --> Must be run on AT LEAST 16 mpi ranks
 
+Make sure to update the path to your LAMMPS exec in submit-temper.bash
+
 Set last to 0 before running,
 
   echo 0 > last
