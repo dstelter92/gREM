@@ -26,6 +26,8 @@ kb = 0.0019872041       #kcal/mol*K
 #kb = 0.0083144621      #kj/mol*K
 #kb = 1.0               #reduced/LJ
 
+start = int(sys.argv[1])
+stop = int(sys.argv[2])
 
 def EffTemp(lambd, H):
 # Evaluates the gREM effective temperature
@@ -95,7 +97,7 @@ print "Lambdas: "
 for l in range(nReplica):
     sys.stdout.write("%s " % lambdas[l])
     sys.stdout.flush()
-    data = loadtxt("./replica-%d.dat" % (l))
+    data = loadtxt("./replica-%d_%d-%d.dat" % (l,start,stop))
     #data = loadtxt("../ent_%d-%d.dat" % (lambdas[l], data_num))
     # Calculate histogram
     hist[:,l], edges = histogramdd(ravel(data), bins=nbin, range=[(Emin, Emax)])
