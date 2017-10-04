@@ -2,7 +2,6 @@
 
 import os, sys
 from numpy import *
-import pandas as pd
 
 ##################
 ###  For gREM  ###
@@ -46,10 +45,13 @@ full_data[:] = NAN
 # Format: step, indx1, indx2,... indxN, walk1, walk2,...walkN, rep1, rep2,...repN
 
 # Save Exchanges
-print "Input exchanges..."
+loop = 1.0 / (stop - start)
+print "Read exchanges..."
 for i in range(stop-start):
     wname = '../log/log.lammps' + '-' + str(start+i)
     Walk = genfromtxt(wname, skip_header=3, skip_footer=1)
+    sys.stdout.write("  %d%% completed\r" % int(loop*(i+1)*100))
+    sys.stdout.flush()
     for j in range(NumReplica):
         for k in range(length):
             indx = k+(i*length)
@@ -57,9 +59,12 @@ for i in range(stop-start):
                 full_data[:,j+1][indx] = int(Walk[j+1])
             else:
                 full_data[:,j+1][indx] = int(Walk[:,j+1][k/ratio])
+print "\n"
 
 # Save Walkers
-print "Input ", NumReplica, " walkers..."
+loop = 1.0 / NumReplica
+loop2 = (loop * 1.0) / (stop - start)
+print "Input data for ", NumReplica, " walkers..."
 for i in range(NumReplica):
     #print "\n===--- Walker", i, "---==="
     for j in range(stop-start):
@@ -68,16 +73,17 @@ for i in range(NumReplica):
 
         # Error checking
         if (Hist[0][0] != 0):
-          print "Err. Header value is incorrect."
+          print "Err. Header value is incorrect", Hist[0][0]
           sys.exit()
 
         if (Hist[-1][0] != steps-thermo):
-          print "Err. Footer value is incorrect."
+          print "Err. Footer value is incorrect", Hist[-1][0]
           sys.exit()
 
         #sys.stdout.write("Walker %d, Data index: %d\n" % (i,j+start))
         #sys.stdout.write("  Step: start=%d end=%d\n" % (Hist[0][0],Hist[-1][0]))
-        sys.stdout.write("  Walker %d: Data index, %d Energy: min=%f max=%f\r" % (i,j+start,amin(Hist[:,1]),amax(Hist[:,1])))
+        percent = (j+1)*loop2 + (i)*loop
+        sys.stdout.write("  (%.1f%%) Walker %d: Data index, %d Energy: min=%.3f max=%.3f\r" % (percent*100,i,j+start,amin(Hist[:,1]),amax(Hist[:,1])))
         sys.stdout.flush()
 
         for k in range(length):
@@ -90,14 +96,17 @@ print "\n"
 # Save Replicas
 print "Get replicas..."
 for rep in range(NumReplica):
+    sys.stdout.write("  %d%% completed\r" % int(loop*(rep+1)*100))
+    sys.stdout.flush()
     for indx in range(len(full_data[:,0])):
         for j in range(NumReplica):
             if (full_data[:,j+1][indx] == rep):
                 full_data[:,rep+(2*NumReplica)+1][indx] = full_data[:,j+NumReplica+1][indx]
+print "\n"
 
 #savetxt('full_replica_data.dat', full_data)
 walkers = empty(size_walk, dtype=int)
-print "\nSaving outputs..."
+print "Saving outputs..."
 for rep in range(NumReplica):
     Rname = 'replica-' + str(rep) + '_' + str(start) + '-' + str(stop) + '.dat'
     Wname = 'walker-' + str(rep) + '_' + str(start) + '-' + str(stop) + '.dat'
