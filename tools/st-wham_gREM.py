@@ -2,6 +2,7 @@
 
 import os,sys
 from numpy import *
+import pandas as pd
 
 ########### ST-WHAM for python...##########
 # Originally written in f90 by Jaegil Kim #
@@ -28,6 +29,9 @@ kb = 0.0019872041       #kcal/mol*K
 
 start = int(sys.argv[1])
 stop = int(sys.argv[2])
+dir = "./"
+if (len(sys.argv) == 4):
+  dir = sys.argv[3]
 
 def EffTemp(lambd, H):
 # Evaluates the gREM effective temperature
@@ -97,10 +101,10 @@ print "Lambdas: "
 for l in range(nReplica):
     sys.stdout.write("%s " % lambdas[l])
     sys.stdout.flush()
-    data = loadtxt("./replica-%d_%d-%d.dat" % (l,start,stop))
-    #data = loadtxt("../ent_%d-%d.dat" % (lambdas[l], data_num))
+    data = pd.read_csv("%s/replica-%d_%d-%d.dat" % (dir,l,start,stop), sep='\n').as_matrix()
+    #data = loadtxt("%s/replica-%d_%d-%d.dat" % (dir,l,start,stop))
     # Calculate histogram
-    hist[:,l], edges = histogramdd(ravel(data), bins=nbin, range=[(Emin, Emax)])
+    hist[:,l], edges = histogramdd(ravel(data[:,0]), bins=nbin, range=[(Emin, Emax)])
 
     #for i in range(nbin):
         #hout.write("%f %f\n" % (edges[0][i], hist[i][l]))
