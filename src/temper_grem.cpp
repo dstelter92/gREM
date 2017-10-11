@@ -87,6 +87,8 @@ void TemperGrem::command(int narg, char **arg)
   if (lambda != fix_grem->lambda)
     error->universe_all(FLERR,"Lambda from tempering and fix in the same world"
         " must be the same");
+  if (fix_grem->lambda_start != fix_grem->lambda_stop)
+    error->universe_all(FLERR,"Must temper with constant lambda");
   double eta = fix_grem->eta;
   double h0 = fix_grem->h0;
   double pressref = 0;

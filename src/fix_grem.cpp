@@ -47,7 +47,7 @@ enum{NONE,CONSTANT,EQUAL,ATOM};
 FixGrem::FixGrem(LAMMPS *lmp, int narg, char **arg) :
   Fix(lmp, narg, arg)
 {
-  if (narg < 7) error->all(FLERR,"Illegal fix grem command");
+  if (narg < 8) error->all(FLERR,"Illegal fix grem command");
 
   scalar_flag = 1;
   extscalar = 0;
@@ -57,13 +57,16 @@ FixGrem::FixGrem(LAMMPS *lmp, int narg, char **arg) :
 
   // tbath - temp of bath, the same as defined in thermostat
 
-  lambda = force->numeric(FLERR,arg[3]);
-  eta = force->numeric(FLERR,arg[4]);
-  h0 = force->numeric(FLERR,arg[5]);
+  lambda_start = force->numeric(FLERR,arg[3]);
+  lambda_stop = force->numeric(FLERR,arg[4]);
+  eta = force->numeric(FLERR,arg[5]);
+  h0 = force->numeric(FLERR,arg[6]);
 
-  int n = strlen(arg[6])+1;
+  lambda = lambda_start;
+
+  int n = strlen(arg[7])+1;
   id_nh = new char[n];
-  strcpy(id_nh,arg[6]);
+  strcpy(id_nh,arg[7]);
 
   // create a new compute temp style
   // id = fix-ID + temp
@@ -267,7 +270,9 @@ void FixGrem::post_force(int vflag)
   // potential energy
   double tmpenthalpy = tmppe+pressref*tmpvolume/(force->nktv2p);
 
-  double teffective = lambda+eta*(tmpenthalpy-h0);
+  compute_lambda_target();
+
+  double teffective = lambda_target+eta*(tmpenthalpy-h0);
   scale_grem = tbath/teffective;
 
   for (int i = 0; i < nlocal; i++)
@@ -284,6 +289,17 @@ void FixGrem::post_force(int vflag)
 double FixGrem::compute_scalar()
 {
   return tbath / scale_grem;
+}
+
+/* ---------------------------------------------------------------------- */
+
+void FixGrem::compute_lambda_target()
+{
+  double delta = update->ntimestep - update->beginstep;
+  if (delta != 0.0)
+    delta /= update->endstep - update->beginstep;
+
+  lambda_target = lambda_start + delta * (lambda_stop-lambda_start);
 }
 
 /* ----------------------------------------------------------------------

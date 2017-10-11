@@ -85,6 +85,23 @@ E: Tempering fix ID is not defined
 
 The fix ID specified by the grem command does not exist.
 
+E: Lambda from tempering and fix in the same world must be the same.
+
+Lambda defined in temper/grem is different from fix/grem.
+
+E: Must temper with constant lambda
+
+Lambda_start and lambda_stop are different in fix/grem, cannot temper with 
+variable lambda.
+
+E: Fix id for nvt of npt fix does not exist
+
+Self-explanatory.
+
+E: Illegal temperature index
+
+Temperature index is outside the range of the number of worlds specified.
+
 E: Invalid frequency in grem command
 
 Nevery must be > 0.
